@@ -1,0 +1,29 @@
+{
+  "name": "image-tagging",
+  "title": "Image Tagging",
+  "description": "JQuery Plugin to tag or annotate on images",
+  "version": "0.1.0",
+  "homepage": "https://github.com/thecodejack/jquery-image-tagging",
+  "author": {
+    "name": "Srikanth",
+    "email": "aadisrikanth@gmail.com",
+    "url": "bit.ly/adisrikanth"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/thecodejack/jquery-image-tagging.git"
+  },
+  "bugs": {
+    "url": "https://github.com/thecodejack/jquery-image-tagging/issues"
+  },
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "https://github.com/thecodejack/jquery-image-tagging/blob/master/LICENSE-MIT"
+    }
+  ],
+  "dependencies": {
+    "jquery": "*"
+  },
+  "keywords": []
+}
