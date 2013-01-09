@@ -71,7 +71,7 @@
             // the plugin's final properties are the merged default and 
             // user-provided options (if any)
             plugin.settings = $.extend({}, defaults, options);
-            
+
             // code goes here
 
         }
