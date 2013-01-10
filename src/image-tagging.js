@@ -3,7 +3,14 @@
 // version 1.1, May 14th, 2011
 // by Stefan Gabos
 
-// remember to change every instance of "pluginName" to the name of your plugin!
+// remember to change every instance of "imgTag" to the name of your plugin!
+
+/**
+Dependencies: Jquery 1.8
+              JqueryUI 1.9
+
+
+*/
 (function($) {
 
     // here we go!
@@ -17,17 +24,20 @@
             taggable: false,
             ownTagIcon: '', //png file only
             ajaxable: false,
-            ajaxUrl:'',
+            getUrl:'',
+            saveUrl:'',
+            deleteUrl:'',
             hoverable: true,
             commentable:true,
             multiSelectable: true, //checkboxes will be visible
             touchable: true, //for touch devices like tablets/phones
             centerAlign: true,
             serializable: true, //convert all tag positions to JSON object
+            controlsDivId : $(''), //Default controls will be added and pass jquery element
             tagdata : {
                 tags : [
                 { top:100, left:100, icon:false, iconUrl:'', width:20, height:20,
-                editable:true, text:'This is description', id: 1 }
+                editable:true, text:'This is description', tagURL:'' , id: 1 }
                 ]
             },
             overrideWithCallbacks : false,
@@ -46,35 +56,42 @@
             toJSON: function() {},
             addTag: function() {},
             deleteTag: function() {},
-            editTag: function() {}
-
-
+            editTag: function() {},
+            redraw: function(){},
+            postData: function(){}
         }
 
         // to avoid confusions, use "plugin" to reference the 
         // current instance of the object
         var plugin = this;
 
-        // this will hold the merged default, and user-provided options
-        // plugin's properties will be available through this object like:
-        // plugin.settings.propertyName from inside the plugin or
-        // element.data('imgTag').settings.propertyName from outside the plugin, 
-        // where "element" is the element the plugin is attached to;
         plugin.settings = {}
 
         var $element = $(element), // reference to the jQuery version of DOM element
              element = element;    // reference to the actual DOM element
 
+        var overlay=$('<div class="image-overlay"></div>');
+        overlay.height($element.height());
+        overlay.width($element.width());
+        overlay.offset($element.offset());
+        console.log('overlay created');
+        $element.after(overlay);
         // the "constructor" method that gets called when the object is created
         plugin.init = function() {
 
             // the plugin's final properties are the merged default and 
             // user-provided options (if any)
             plugin.settings = $.extend({}, defaults, options);
-            
+            var data=plugin.settings.tagdata;
+            for (var i = 0; i < data.tags.length; i++) {
+                var tagObject=new Tag(data.tags[i]);
+                overlay.append(tagObject.dom);
+            };
             // code goes here
 
         }
+
+
 
         // public methods
         // these methods can be called like:
@@ -100,9 +117,36 @@
 
         }
 
+        var Tag= function(tag) {
+            this.data=tag;
+            this.dom=$('<div class="tag"><div>');
+            this.makePosition();
+            if (plugin.settings.hoverable===true) {
+                this.doHover();
+            };
+        }
+
+        Tag.prototype.makePosition = function() {
+            this.dom.css('position','absolute');
+            this.dom.css('top',this.data.top + 'px');
+            this.dom.css('left',this.data.left + 'px');
+            this.dom.css('width',this.data.width + 'px');
+            this.dom.css('height',this.data.height + 'px');
+        }
+
+        Tag.prototype.doHover = function() {
+            this.dom.hover(function(){
+                $(this).append($('<div>Test</div>'));
+            },function(){
+
+            });
+        }
+
         // fire up the plugin!
         // call the "constructor" method
         plugin.init();
+
+        
 
     }
 
