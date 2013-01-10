@@ -1,0 +1,12 @@
+.image-overlay {
+    border: solid 1px #ccc;
+    background-position: left top;
+    background-repeat: no-repeat;
+    display: block;
+    margin: 0;
+    position: absolute;
+}
+
+.tag {
+	border:1px solid #FFF;	
+}
