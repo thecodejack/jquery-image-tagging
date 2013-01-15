@@ -76,22 +76,40 @@ Dependencies: Jquery 1.8
         overlay.offset($element.offset());
         console.log('overlay created');
         $element.after(overlay);
+        var tags=[];
         // the "constructor" method that gets called when the object is created
         plugin.init = function() {
-
             // the plugin's final properties are the merged default and 
-            // user-provided options (if any)
+            // user-provided options (if any)  
             plugin.settings = $.extend({}, defaults, options);
             var data=plugin.settings.tagdata;
             for (var i = 0; i < data.tags.length; i++) {
                 var tagObject=new Tag(data.tags[i]);
                 overlay.append(tagObject.dom);
+                tags.push(tagObject);
             };
             // code goes here
 
+            
+
         }
 
-
+        overlay.on({
+            mouseenter: function() {
+                // Handle mouseenter...
+            },
+            mouseleave: function() {
+                // Handle mouseleave...
+            },
+            click: function(e) {
+               console.log("Test");
+               if(plugin.settings.editable){
+                    var point=getCoordsWRimage(new Point(e.pageX,e.pageY));
+                    var editTagObj=new editTag(point.x,point.y);
+                    overlay.append(editTagObj.dom);
+                }
+            }
+        });
 
         // public methods
         // these methods can be called like:
@@ -100,7 +118,7 @@ Dependencies: Jquery 1.8
         // the plugin, where "element" is the element the plugin is attached to;
 
         // a public method. for demonstration purposes only - remove it!
-        plugin.foo_public_method = function() {
+        plugin.clear = function() {
 
             // code goes here
 
@@ -117,6 +135,29 @@ Dependencies: Jquery 1.8
 
         }
 
+        var Point=function(x,y) {
+            this.x=x;
+            this.y=y;
+        }
+
+        var getCoordsWRimage=function(point) {
+            var abspoint=new Point(0,0); 
+            abspoint.x=point.x-$element.position().left;
+            abspoint.y=point.y-$element.position().top;
+            return abspoint;
+        }
+
+
+        var editTag= function(x,y) {
+            this.left=x;
+            this.top=y;
+            this.dom=$('<div><div class="tag"><div></div>');
+            this.dom.css('position','absolute');
+            this.dom.css('top',this.top + 'px');
+            this.dom.css('left',this.left + 'px');
+            this.boxDom=$('<div class="boxtag"><div class="edit-textbox"></div><div class="buttons"><button class="edit-SaveButton"></button></div></div>');
+
+        }
         var Tag= function(tag) {
             this.data=tag;
             this.dom=$('<div class="tag"><div>');
@@ -135,19 +176,33 @@ Dependencies: Jquery 1.8
         }
 
         Tag.prototype.doHover = function() {
+            var self=this;
             this.dom.hover(function(){
-                $(this).append($('<div>Test</div>'));
+                var tagDesc=$('<div class="tag-desc">'+self.data.text+'</div>');
+                tagDesc.css('margin-top',$(this).height()+'px');
+                tagDesc.css('width',($(this).width()*2)+'px');
+                //tagDesc.css('left',$(this).width());
+                $(this).addClass('tag-hover');
+                $(this).append(tagDesc);
             },function(){
+                $(this).find('.tag-desc').remove();
+                $(this).removeClass('tag-hover');
 
             });
+        }
+
+        Tag.prototype.setCenter = function(point) {
+
+        }
+
+        Tag.prototype.delete = function() {
+            this.dom.remove();
+            this.delete;
         }
 
         // fire up the plugin!
         // call the "constructor" method
         plugin.init();
-
-        
-
     }
 
     // add the plugin to the jQuery.fn object

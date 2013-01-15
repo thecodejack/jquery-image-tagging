@@ -1,4 +1,4 @@
-# Image Tagging
+# Image Tagging(Development on Progress)
 
 JQuery Plugin to tag or annotate on images
 
