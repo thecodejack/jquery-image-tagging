@@ -8,5 +8,16 @@
 }
 
 .tag {
-	border:1px solid #FFF;	
+	border:1px solid #FFF;
+    width: 20px;
+    height: 20px;	
+}
+
+.tag-hover {
+	margin:1px;
+}
+
+.tag-desc {
+	background-color: #000;
+	color:#FFF;	
 }
