@@ -82,16 +82,28 @@ Dependencies: Jquery 1.8
             // the plugin's final properties are the merged default and 
             // user-provided options (if any)  
             plugin.settings = $.extend({}, defaults, options);
+            drawTags();
+            // code goes here
+
+            
+        }
+
+        var clear = function() {
+            overlay.html('');
+        }
+
+        var drawTags = function() {
             var data=plugin.settings.tagdata;
             for (var i = 0; i < data.tags.length; i++) {
                 var tagObject=new Tag(data.tags[i]);
                 overlay.append(tagObject.dom);
                 tags.push(tagObject);
             };
-            // code goes here
+        }
 
-            
-
+        var redrawTags = function() {
+            clear();
+            drawTags();
         }
 
         overlay.on({
@@ -147,17 +159,47 @@ Dependencies: Jquery 1.8
             return abspoint;
         }
 
+        var setCenter = function(point,width,height) {
+            var cpoint=new Point(0,0);
+            cpoint.x=point.x+(width/2);
+            cpoint.y=point.y+(height/2);
+        }
 
         var editTag= function(x,y) {
             this.left=x;
             this.top=y;
-            this.dom=$('<div><div class="tag"><div></div>');
+            this.dom=$('<div><div class="tag"><div><div class="otherOptions"></div></div>');
             this.dom.css('position','absolute');
             this.dom.css('top',this.top + 'px');
             this.dom.css('left',this.left + 'px');
-            this.boxDom=$('<div class="boxtag"><div class="edit-textbox"></div><div class="buttons"><button class="edit-SaveButton"></button></div></div>');
+
+            this.boxDom=$('<div class="boxtag"><div class="edit-textbox"></div><div class="buttons"><button class="edit-save-button">Save</button></div></div>');
+            this.dom.find('.otherOptions').append(this.boxDom);
+            this.dom.on({
+                mouseenter: function() {
+                    // Handle mouseenter...
+                },
+                mouseleave: function() {
+                    // Handle mouseleave...
+                },
+                click: function(e) {
+                   if($(e.target).hasClass('edit-save-button')) {
+                        var tagObject=new Tag(data.tags[i]);
+                        overlay.append(tagObject.dom);
+                        tags.push(tagObject);
+                   }
+                   e.stopPropagation();
+                }
+            });
+            this.dom.draggable({
+                containment: "parent"
+            });
 
         }
+
+
+
+
         var Tag= function(tag) {
             this.data=tag;
             this.dom=$('<div class="tag"><div>');
@@ -189,10 +231,6 @@ Dependencies: Jquery 1.8
                 $(this).removeClass('tag-hover');
 
             });
-        }
-
-        Tag.prototype.setCenter = function(point) {
-
         }
 
         Tag.prototype.delete = function() {
